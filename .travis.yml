@@ -1,0 +1,29 @@
+sudo: required
+services: 
+ - docker
+
+before_install:
+  - docker build -t bhaba/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+ - docker run -t bhaba/react-test npm test -- --coverage
+
+
+## Build prod version of all the projects and pushes to docker hub
+
+after_success: 
+ - docker build -t bhaba/multi-client ./client
+ - docker build -t bhaba/multi-nginx ./nginx
+ - docker build -t bhaba/multi-server ./server
+ - docker build -t bhaba/multi-worker ./worker
+
+## Login to Docker CLI
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin 
+
+ ##Take the images above  and push those to docker hub
+
+ - docker push bhaba/multi-client
+ - docker push bhaba/multi-nginx
+ - docker push bhaba/multi-server
+ - docker push bhaba/multi-worker
+
