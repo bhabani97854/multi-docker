@@ -1,0 +1,5 @@
+FROM nginx
+
+##Copy default.conf from current dir to overide default.conf in Nginx.
+
+COPY ./default.conf /etc/conf.d/default.conf
